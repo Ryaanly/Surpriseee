@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Our Memories 💛</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100%;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #F0EBE3;
+            overflow-x: hidden;
+        }
+
+        /* ── HEADER ── */
+        .header {
+            text-align: center;
+            padding: 50px 20px 30px;
+            animation: fadeInDown 0.8s ease forwards;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            font-weight: bold;
+            color: #1560bd;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.15);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 15px;
+            color: #888;
+            font-style: italic;
+        }
+
+        .header .divider {
+            width: 60px;
+            height: 3px;
+            background: #e8a0b4;
+            border-radius: 10px;
+            margin: 14px auto 0;
+        }
+
+        /* ── MASONRY GRID ── */
+        .masonry {
+            columns: 3;
+            column-gap: 16px;
+            padding: 20px 40px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 900px) {
+            .masonry { columns: 2; padding: 16px 20px 30px; }
+        }
+
+        @media (max-width: 550px) {
+            .masonry { columns: 1; padding: 12px 16px 24px; }
+        }
+
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 16px;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+            background: white;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(24px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeInUp 0.7s ease forwards;
+        }
+
+        .masonry-item:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+        }
+
+        /* stagger delay tiap item */
+        .masonry-item:nth-child(1)  { animation-delay: 0.1s; }
+        .masonry-item:nth-child(2)  { animation-delay: 0.2s; }
+        .masonry-item:nth-child(3)  { animation-delay: 0.3s; }
+        .masonry-item:nth-child(4)  { animation-delay: 0.4s; }
+        .masonry-item:nth-child(5)  { animation-delay: 0.5s; }
+        .masonry-item:nth-child(6)  { animation-delay: 0.6s; }
+        .masonry-item:nth-child(7)  { animation-delay: 0.7s; }
+        .masonry-item:nth-child(8)  { animation-delay: 0.8s; }
+        .masonry-item:nth-child(9)  { animation-delay: 0.9s; }
+
+        .masonry-item img,
+        .masonry-item video {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        /* caption opsional */
+        .masonry-item .caption {
+            padding: 10px 14px 12px;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.5;
+            background: white;
+        }
+
+        .masonry-item .caption span {
+            font-size: 11px;
+            color: #bbb;
+            display: block;
+            margin-top: 3px;
+        }
+
+        /* ── VIDEO badge ── */
+        .video-wrap {
+            position: relative;
+        }
+
+        .video-wrap::after {
+            content: "▶";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 28px;
+            color: white;
+            background: rgba(0,0,0,0.35);
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        /* ── LIGHTBOX ── */
+        .lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.82);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-inner {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+
+        .lightbox-inner img,
+        .lightbox-inner video {
+            max-width: 90vw;
+            max-height: 85vh;
+            border-radius: 12px;
+            display: block;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: -14px;
+            right: -14px;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        /* ── BUTTONS ── */
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            padding: 10px 20px 60px;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease 1s forwards;
+            opacity: 0;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.85;
+            transform: translateY(-2px);
+        }
+
+        .btn-back {
+            background-color: #1560bd;
+            color: white;
+        }
+
+        /* ── KEYFRAMES ── */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>Our Memories 💛</h1>
+        <p>setiap momen berharga, terima kasih sudah ada</p>
+        <div class="divider"></div>
+    </div>
+    <div class="masonry">
+
+        <!-- FOTO 1 -->
+        <div class="masonry-item" onclick="openLightbox('foto1.jpg', 'img')">
+            <img src="foto1.jpg" alt="Kenangan 1" loading="lazy" />
+            <div class="caption">
+                Caption foto ini ✨
+                <span>Januari 2024</span>
+            </div>
+        </div>
+
+        <!-- FOTO 2 -->
+        <div class="masonry-item" onclick="openLightbox('foto2.jpg', 'img')">
+            <img src="foto2.jpg" alt="Kenangan 2" loading="lazy" />
+            <div class="caption">
+                Caption foto ini 🌸
+                <span>Februari 2024</span>
+            </div>
+        </div>
+
+        <!-- VIDEO 1 -->
+        <div class="masonry-item video-wrap" onclick="openLightbox('video1.mp4', 'video')">
+            <video muted playsinline preload="metadata">
+                <source src="video1.mp4" type="video/mp4" />
+            </video>
+            <div class="caption">
+                Caption video ini 🎥
+                <span>Maret 2024</span>
+            </div>
+        </div>
+
+        <!-- FOTO 3 -->
+        <div class="masonry-item" onclick="openLightbox('foto3.jpg', 'img')">
+            <img src="foto3.jpg" alt="Kenangan 3" loading="lazy" />
+            <div class="caption">
+                Caption foto ini 💕
+                <span>April 2024</span>
+            </div>
+        </div>
+
+        <!-- FOTO 4 -->
+        <div class="masonry-item" onclick="openLightbox('foto4.jpg', 'img')">
+            <img src="foto4.jpg" alt="Kenangan 4" loading="lazy" />
+        </div>
+
+        <!-- VIDEO 2 -->
+        <div class="masonry-item video-wrap" onclick="openLightbox('video2.mp4', 'video')">
+            <video muted playsinline preload="metadata">
+                <source src="video2.mp4" type="video/mp4" />
+            </video>
+        </div>
+
+        <!-- FOTO 5 -->
+        <div class="masonry-item" onclick="openLightbox('foto5.jpg', 'img')">
+            <img src="foto5.jpg" alt="Kenangan 5" loading="lazy" />
+            <div class="caption">
+                Caption foto ini 🌷
+                <span>Mei 2024</span>
+            </div>
+        </div>
+
+        <!-- FOTO 6 -->
+        <div class="masonry-item" onclick="openLightbox('foto6.jpg', 'img')">
+            <img src="foto6.jpg" alt="Kenangan 6" loading="lazy" />
+        </div>
+
+        <!-- FOTO 7 -->
+        <div class="masonry-item" onclick="openLightbox('foto7.jpg', 'img')">
+            <img src="foto7.jpg" alt="Kenangan 7" loading="lazy" />
+            <div class="caption">
+                Caption foto ini 💛
+                <span>Juni 2024</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TOMBOL KEMBALI -->
+    <div class="btn-group">
+        <a href="yes.html" class="btn btn-back">← Kembali</a>
+    </div>
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+        <div class="lightbox-inner" id="lightbox-inner">
+            <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+        </div>
+    </div>
+
+    <script>
+        function openLightbox(src, type) {
+            const inner = document.getElementById('lightbox-inner');
+            // clear previous
+            const old = inner.querySelector('img, video');
+            if (old) old.remove();
+
+            if (type === 'img') {
+                const img = document.createElement('img');
+                img.src = src;
+                inner.appendChild(img);
+            } else {
+                const vid = document.createElement('video');
+                vid.src = src;
+                vid.controls = true;
+                vid.autoplay = true;
+                inner.appendChild(vid);
+            }
+
+            document.getElementById('lightbox').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox(e) {
+            if (e && e.target !== document.getElementById('lightbox') && !e.target.classList.contains('lightbox-close')) return;
+            const inner = document.getElementById('lightbox-inner');
+            const vid = inner.querySelector('video');
+            if (vid) vid.pause();
+            document.getElementById('lightbox').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // close dengan tombol Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLightbox({ target: document.getElementById('lightbox') });
+        });
+    </script>
+
+</body>
+</html>
