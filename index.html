@@ -1,275 +1,468 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Message from Wiynuh</title>
+    <title>???</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,500&family=Quicksand:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body, html {
-            width: 100%;
-            min-height: 100vh;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: #f3d0d7;
-            overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
+      html,
+      body {
+        width: 100%;
+        min-height: 100vh;
+        background: #0b0c14;
+        overflow-x: hidden;
+        font-family: "Quicksand", sans-serif;
+      }
 
-        /* ── CONFETTI CANVAS ── */
-        #confetti-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        padding: 24px;
+      }
 
-        /* ── WRAPPER ── */
-        .wrapper {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            padding: 40px 20px;
-            max-width: 500px;
-            width: 100%;
-        }
+      /* ── STARFIELD ── */
+      .stars {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        background: radial-gradient(
+          ellipse at 50% 20%,
+          #161a2c 0%,
+          #0b0c14 65%
+        );
+      }
 
-        /* ── TITLE ── */
-        .question {
-            font-size: 28px;
-            font-weight: bold;
-            color: #e94d58;
-            text-align: center;
-            opacity: 0;
-            animation: fadeInDown 0.8s ease 0.2s forwards;
-            text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
-            letter-spacing: 0.5px;
-        }
+      .star {
+        position: absolute;
+        background: #fff;
+        border-radius: 50%;
+        animation: twinkleStar ease-in-out infinite;
+      }
 
-        /* ── GIF ── */
-        .gif-wrap {
-            opacity: 0;
-            animation: zoomIn 0.7s ease 0.5s forwards;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 8px 30px rgba(233, 77, 88, 0.25);
-            border: 4px solid rgba(255,255,255,0.8);
+      @keyframes twinkleStar {
+        0%,
+        100% {
+          opacity: 0.15;
+          transform: scale(1);
         }
+        50% {
+          opacity: 1;
+          transform: scale(1.3);
+        }
+      }
 
-        .gif-wrap img {
-            width: 280px;
-            display: block;
-        }
+      /* drifting fog */
+      .fog {
+        position: fixed;
+        inset: -20%;
+        z-index: 0;
+        background:
+          radial-gradient(
+            circle at 20% 80%,
+            rgba(120, 80, 160, 0.1),
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at 80% 30%,
+            rgba(80, 100, 180, 0.1),
+            transparent 40%
+          );
+        animation: fogDrift 18s ease-in-out infinite alternate;
+        pointer-events: none;
+      }
 
-        /* ── BUTTONS ── */
-        .btn-group {
-            display: flex;
-            gap: 16px;
-            opacity: 0;
-            animation: fadeInUp 0.7s ease 0.9s forwards;
-            flex-wrap: wrap;
-            justify-content: center;
+      @keyframes fogDrift {
+        from {
+          transform: translate(0, 0) scale(1);
         }
+        to {
+          transform: translate(3%, -2%) scale(1.05);
+        }
+      }
 
-        .btn-yes, .btn-no {
-            padding: 14px 40px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 50px;
-            border: none;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            text-decoration: none;
-            display: inline-block;
-            letter-spacing: 0.5px;
-        }
+      /* ── SCENE ── */
+      .scene {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        max-width: 560px;
+        width: 100%;
+      }
 
-        .btn-yes {
-            background: #e94d58;
-            color: white;
-            box-shadow: 0 4px 15px rgba(233, 77, 88, 0.45);
-        }
+      .eyebrow {
+        font-family: "Quicksand", sans-serif;
+        font-size: 13px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: #6a6f95;
+        opacity: 0;
+        animation: revealUp 1s ease 0.2s forwards;
+      }
 
-        .btn-yes:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 8px 20px rgba(233, 77, 88, 0.5);
-        }
+      .eyebrow::before,
+      .eyebrow::after {
+        content: "✦";
+        color: #4d5380;
+        margin: 0 10px;
+        font-size: 10px;
+      }
 
-        .btn-no {
-            background: white;
-            color: #e94d58;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            position: fixed; /* untuk efek kabur */
-        }
+      .title {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-weight: 600;
+        font-size: 38px;
+        color: #f1ecff;
+        margin: 18px 0 6px;
+        letter-spacing: 0.5px;
+        opacity: 0;
+        animation: revealUp 1s ease 0.45s forwards;
+        text-shadow: 0 0 24px rgba(170, 150, 255, 0.35);
+      }
 
-        .btn-no:hover {
-            transform: translateY(-3px);
-        }
+      .subtitle {
+        font-size: 14px;
+        color: #8a8fb5;
+        margin-bottom: 48px;
+        font-style: italic;
+        opacity: 0;
+        animation: revealUp 1s ease 0.65s forwards;
+        line-height: 1.6;
+      }
 
-        /* ── FLOATING HEARTS ── */
-        .hearts {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
+      /* ── SEAL / LOCK signature element ── */
+      .seal-wrap {
+        position: relative;
+        width: 130px;
+        height: 130px;
+        margin: 0 auto 46px;
+        opacity: 0;
+        animation: revealUp 1s ease 0.85s forwards;
+      }
 
-        .heart {
-            position: absolute;
-            bottom: -40px;
-            font-size: 20px;
-            opacity: 0;
-            animation: floatUp linear infinite;
-        }
+      .seal-ring {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 1px solid rgba(170, 150, 255, 0.25);
+        animation: rotateSlow 30s linear infinite;
+      }
 
-        @keyframes floatUp {
-            0%   { transform: translateY(0) rotate(0deg); opacity: 0.7; }
-            100% { transform: translateY(-100vh) rotate(20deg); opacity: 0; }
-        }
+      .seal-ring::before,
+      .seal-ring::after {
+        content: "✦";
+        position: absolute;
+        color: rgba(200, 180, 255, 0.5);
+        font-size: 10px;
+      }
 
-        /* ── KEYFRAMES ── */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-24px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
+      .seal-ring::before {
+        top: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .seal-ring::after {
+        bottom: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(24px); }
-            to   { opacity: 1; transform: translateY(0); }
+      @keyframes rotateSlow {
+        from {
+          transform: rotate(0deg);
         }
+        to {
+          transform: rotate(360deg);
+        }
+      }
 
-        @keyframes zoomIn {
-            from { opacity: 0; transform: scale(0.8); }
-            to   { opacity: 1; transform: scale(1); }
-        }
+      .seal-core {
+        position: absolute;
+        inset: 18px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 30%, #2b2f52, #15172b 70%);
+        box-shadow:
+          0 0 30px rgba(140, 120, 230, 0.35),
+          inset 0 0 20px rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        animation: pulseGlow 3s ease-in-out infinite;
+      }
 
-        /* ── PULSE on gif setelah load ── */
-        .gif-wrap.loaded {
-            animation: zoomIn 0.7s ease 0.5s forwards,
-            pulse 2.5s ease 1.5s infinite;
+      @keyframes pulseGlow {
+        0%,
+        100% {
+          box-shadow:
+            0 0 30px rgba(140, 120, 230, 0.35),
+            inset 0 0 20px rgba(0, 0, 0, 0.5);
         }
+        50% {
+          box-shadow:
+            0 0 46px rgba(140, 120, 230, 0.55),
+            inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+      }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50%       { transform: scale(1.02); }
+      /* ── COUNTDOWN ── */
+      .countdown {
+        display: flex;
+        justify-content: center;
+        gap: 18px;
+        opacity: 0;
+        animation: revealUp 1s ease 1.05s forwards;
+        flex-wrap: wrap;
+      }
+
+      .unit {
+        min-width: 76px;
+      }
+
+      .unit .num {
+        font-family: "Cormorant Garamond", serif;
+        font-weight: 600;
+        font-size: 44px;
+        color: #f1ecff;
+        text-shadow: 0 0 18px rgba(170, 150, 255, 0.4);
+        line-height: 1;
+        transition: opacity 0.25s ease;
+      }
+
+      .unit .label {
+        margin-top: 8px;
+        font-size: 11px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #6a6f95;
+      }
+
+      .sep {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 36px;
+        color: #4d5380;
+        align-self: flex-start;
+        margin-top: 2px;
+      }
+
+      .num.flicker {
+        animation: flickerNum 0.25s ease;
+      }
+
+      @keyframes flickerNum {
+        0% {
+          opacity: 0.2;
         }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      .footer-note {
+        margin-top: 50px;
+        font-size: 12.5px;
+        color: #565b80;
+        opacity: 0;
+        animation: revealUp 1s ease 1.25s forwards;
+        letter-spacing: 0.5px;
+        font-style: italic;
+      }
+
+      /* ── REVEAL / UNLOCK OVERLAY ── */
+      .unlock-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: #0b0c14;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .unlock-overlay.active {
+        display: flex;
+        animation: fadeIn 0.6s ease;
+      }
+
+      .unlock-burst {
+        font-size: 64px;
+        animation: burstPulse 1s ease-in-out infinite;
+      }
+
+      @keyframes burstPulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.15);
+        }
+      }
+
+      .unlock-text {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: 28px;
+        color: #f1ecff;
+        margin-top: 22px;
+        text-shadow: 0 0 24px rgba(170, 150, 255, 0.4);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes revealUp {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+          filter: blur(4px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+          filter: blur(0);
+        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+    <div class="stars" id="stars"></div>
+    <div class="fog"></div>
 
-    <canvas id="confetti-canvas"></canvas>
+    <div class="scene">
+      <div class="eyebrow">sesuatu sedang menunggu</div>
+      <div class="title">jangan dibuka dulu, sayang...</div>
+      <div class="subtitle">ada kejutan kecil yang masih terkunci waktu</div>
 
-    <!-- floating hearts -->
-    <div class="hearts" id="hearts"></div>
+      <div class="seal-wrap">
+        <div class="seal-ring"></div>
+        <div class="seal-core">🔒</div>
+      </div>
 
-    <audio autoplay loop>
-        <source src="birthdaysong.mp3" type="audio/mpeg" />
-    </audio>
-
-    <div class="wrapper">
-        <h1 class="question">Happy Birthday sayangg 🎂</h1>
-
-        <div class="gif-wrap" id="gifWrap">
-            <img src="Birthday.gif" alt="Happy Birthday" id="gifImg" />
+      <div class="countdown" id="countdown">
+        <div class="unit">
+          <div class="num" id="days">--</div>
+          <div class="label">Hari</div>
         </div>
-
-        <div class="btn-group">
-            <a href="yes.html" class="btn-yes">Yes 🥰</a>
-            <button class="btn-no" id="noBtn">No 🙈</button>
+        <div class="sep">:</div>
+        <div class="unit">
+          <div class="num" id="hours">--</div>
+          <div class="label">Jam</div>
         </div>
+        <div class="sep">:</div>
+        <div class="unit">
+          <div class="num" id="minutes">--</div>
+          <div class="label">Menit</div>
+        </div>
+        <div class="sep">:</div>
+        <div class="unit">
+          <div class="num" id="seconds">--</div>
+          <div class="label">Detik</div>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        sabar ya, semuanya akan terbuka pada waktunya 🤫
+      </div>
+    </div>
+
+    <div class="unlock-overlay" id="unlockOverlay">
+      <div class="unlock-burst">🔓✨</div>
+      <div class="unlock-text">waktunya sudah tiba...</div>
     </div>
 
     <script>
-        // ── TOMBOL NO KABUR ──
-        const noBtn = document.getElementById('noBtn');
+      // ── GENERATE STARS ──
+      const starsContainer = document.getElementById("stars");
+      for (let i = 0; i < 90; i++) {
+        const star = document.createElement("div");
+        star.classList.add("star");
+        const size = Math.random() * 2 + 1;
+        star.style.width = size + "px";
+        star.style.height = size + "px";
+        star.style.left = Math.random() * 100 + "vw";
+        star.style.top = Math.random() * 100 + "vh";
+        star.style.animationDuration = 2 + Math.random() * 3 + "s";
+        star.style.animationDelay = Math.random() * 4 + "s";
+        starsContainer.appendChild(star);
+      }
 
-        noBtn.addEventListener('mouseover', () => {
-            const maxX = window.innerWidth  - noBtn.offsetWidth  - 20;
-            const maxY = window.innerHeight - noBtn.offsetHeight - 20;
-            noBtn.style.left = Math.floor(Math.random() * maxX) + 'px';
-            noBtn.style.top  = Math.floor(Math.random() * maxY) + 'px';
-        });
+      // ── COUNTDOWN TARGET ──
+      // 9 September 2026, 00:00 WIB (UTC+7)
+      const target = new Date("2026-09-09T00:00:00+07:00").getTime();
 
-        // ── FLOATING HEARTS ──
-        const heartsEl = document.getElementById('hearts');
-        const symbols  = ['💕','💖','🌸','✨','💗','🎀','💝'];
+      const elDays = document.getElementById("days");
+      const elHours = document.getElementById("hours");
+      const elMinutes = document.getElementById("minutes");
+      const elSeconds = document.getElementById("seconds");
+      const overlay = document.getElementById("unlockOverlay");
 
-        function spawnHeart() {
-            const h = document.createElement('span');
-            h.classList.add('heart');
-            h.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-            h.style.left     = Math.random() * 100 + 'vw';
-            h.style.fontSize = (14 + Math.random() * 18) + 'px';
-            const dur        = 5 + Math.random() * 6;
-            h.style.animationDuration = dur + 's';
-            h.style.animationDelay   = Math.random() * 3 + 's';
-            heartsEl.appendChild(h);
-            setTimeout(() => h.remove(), (dur + 3) * 1000);
+      let lastSeconds = -1;
+
+      function pad(n) {
+        return String(n).padStart(2, "0");
+      }
+
+      function tick() {
+        const now = Date.now();
+        const diff = target - now;
+
+        if (diff <= 0) {
+          clearInterval(timer);
+          elDays.textContent = "00";
+          elHours.textContent = "00";
+          elMinutes.textContent = "00";
+          elSeconds.textContent = "00";
+
+          overlay.classList.add("active");
+          setTimeout(() => {
+            window.location.href = "main.html";
+          }, 2400);
+          return;
         }
 
-        setInterval(spawnHeart, 600);
-        for (let i = 0; i < 8; i++) spawnHeart();
+        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const m = Math.floor((diff / (1000 * 60)) % 60);
+        const s = Math.floor((diff / 1000) % 60);
 
-        // ── CONFETTI ──
-        const canvas = document.getElementById('confetti-canvas');
-        const ctx    = canvas.getContext('2d');
-        canvas.width  = window.innerWidth;
-        canvas.height = window.innerHeight;
-        window.addEventListener('resize', () => {
-            canvas.width  = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
+        elDays.textContent = pad(d);
+        elHours.textContent = pad(h);
+        elMinutes.textContent = pad(m);
+        elSeconds.textContent = pad(s);
 
-        const colors = ['#e94d58','#f9a8b8','#ffd6e0','#fff','#ffb3c1','#ff8fab','#fb6f92'];
-        const pieces = Array.from({length: 80}, () => ({
-            x:   Math.random() * canvas.width,
-            y:   Math.random() * canvas.height - canvas.height,
-            r:   3 + Math.random() * 5,
-            d:   1 + Math.random() * 2,
-            color: colors[Math.floor(Math.random() * colors.length)],
-            tilt: Math.random() * 10 - 5,
-            tiltAngle: 0,
-            tiltSpeed: 0.05 + Math.random() * 0.1
-        }));
-
-        function drawConfetti() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            pieces.forEach(p => {
-                p.tiltAngle += p.tiltSpeed;
-                p.y += p.d;
-                p.tilt = Math.sin(p.tiltAngle) * 12;
-                if (p.y > canvas.height) {
-                    p.y = -10;
-                    p.x = Math.random() * canvas.width;
-                }
-                ctx.beginPath();
-                ctx.lineWidth = p.r;
-                ctx.strokeStyle = p.color;
-                ctx.moveTo(p.x + p.tilt + p.r / 2, p.y);
-                ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
-                ctx.stroke();
-            });
-            requestAnimationFrame(drawConfetti);
+        if (s !== lastSeconds) {
+          elSeconds.classList.remove("flicker");
+          void elSeconds.offsetWidth; // restart animasi
+          elSeconds.classList.add("flicker");
+          lastSeconds = s;
         }
+      }
 
-        drawConfetti();
-
-        // pulse gif setelah load
-        document.getElementById('gifImg').addEventListener('load', () => {
-            document.getElementById('gifWrap').classList.add('loaded');
-        });
+      tick();
+      const timer = setInterval(tick, 1000);
     </script>
-</body>
+  </body>
 </html>
