@@ -415,10 +415,49 @@
           opacity: 1;
         }
       }
+
+      /* ── MUTE BUTTON ── */
+      .mute-btn {
+        position: fixed;
+        top: 18px;
+        right: 18px;
+        z-index: 50;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.85);
+        border: 1.5px solid rgba(255, 182, 193, 0.6);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        cursor: pointer;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+        opacity: 0;
+        animation: fadeIn 0.6s ease 0.4s forwards;
+      }
+
+      .mute-btn:hover {
+        transform: scale(1.08);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+      }
+
+      .mute-btn:active {
+        transform: scale(0.94);
+      }
     </style>
   </head>
   <body>
     <div class="particles" id="particles"></div>
+
+    <button class="mute-btn" id="muteBtn" onclick="toggleMute()">🎵</button>
+
+    <audio autoplay loop id="bgAudio">
+      <source src="memories.mp3" type="audio/mpeg" />
+    </audio>
 
     <div class="header">
       <h1>Our Memories 💛</h1>
@@ -576,6 +615,15 @@
     </div>
 
     <script>
+      // ── MUTE TOGGLE ──
+      const bgAudio = document.getElementById("bgAudio");
+      const muteBtn = document.getElementById("muteBtn");
+
+      function toggleMute() {
+        bgAudio.muted = !bgAudio.muted;
+        muteBtn.textContent = bgAudio.muted ? "🔇" : "🎵";
+      }
+
       function openLightbox(src, type) {
         const inner = document.getElementById("lightbox-inner");
         const old = inner.querySelector("img, video");
@@ -663,9 +711,5 @@
       setInterval(createParticle, 600);
       for (let i = 0; i < 8; i++) createParticle();
     </script>
-    <audio autoplay loop id="bgAudio">
-      <source src="memories.mp3" type="audio/mpeg" />
-      Your browser does not support the audio element.
-    </audio>
   </body>
 </html>
